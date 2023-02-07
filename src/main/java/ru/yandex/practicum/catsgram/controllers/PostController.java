@@ -46,6 +46,7 @@ public class PostController {
     @PostMapping(value = "/post")
     public Post create(@RequestBody Post post) {
         posts.add(post);
+        log.debug("Добавлен пост: {}", post);
         return post;
     }
 }

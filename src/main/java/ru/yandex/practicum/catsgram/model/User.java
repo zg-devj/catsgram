@@ -51,4 +51,12 @@ public class User {
         return Objects.hash(email);
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", birthdate=" + birthdate +
+                '}';
+    }
 }
