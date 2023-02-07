@@ -1,0 +1,76 @@
+package ru.yandex.practicum.catsgram.controllers;
+
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.catsgram.exceptions.InvalidEmailException;
+import ru.yandex.practicum.catsgram.exceptions.UserAlreadyExistException;
+import ru.yandex.practicum.catsgram.model.User;
+
+import java.util.Collection;
+import java.util.HashMap;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    // Коллекция пользователей
+    private HashMap<String, User> users = new HashMap<>();
+
+    /**
+     * Возвращаем коллекцию пользователей
+     * GET /users
+     *
+     * @return Collection<User> коллекцию пользователей
+     */
+    @GetMapping()
+    public Collection<User> findAll() {
+
+        return users.values();
+    }
+
+    /**
+     * Создаем нового пользователя, если пользователь
+     * с указанным email не существует
+     * POST /users
+     *
+     * @param user объект пользователя
+     * @return объект пользователя
+     */
+    @PostMapping()
+    public User create(@RequestBody User user) {
+        isEmailExist(user.getEmail());
+
+        if (users.containsKey(user.getEmail())) {
+            throw new UserAlreadyExistException("Пользователь с электронной почтой " +
+                    user.getEmail() + " уже зарегистрирован.");
+        }
+
+        users.put(user.getEmail(), user);
+        return user;
+    }
+
+    /**
+     * Обновляем пользователя если существует, или добавляем нового если нет
+     * PUT /users
+     *
+     * @param user объект пользователя
+     * @return объект пользователя
+     */
+    @PutMapping
+    public User update(@RequestBody User user) {
+        isEmailExist(user.getEmail());
+        users.put(user.getEmail(), user);
+        return user;
+    }
+
+    /**
+     * Проверяем, есть ли пользователь в списке
+     * с такой же электронной почтой
+     *
+     * @param email адрес электронной почты
+     */
+    private void isEmailExist(String email) {
+        if (email == null || email.isBlank()) {
+            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
+        }
+    }
+}
