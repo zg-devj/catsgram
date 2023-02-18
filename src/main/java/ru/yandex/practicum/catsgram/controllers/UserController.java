@@ -16,7 +16,7 @@ public class UserController {
     /**
      * Логер
      */
-    private static final Logger log = LoggerFactory.getLogger(SimpleController.class);
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     // Коллекция пользователей
     private HashMap<String, User> users = new HashMap<>();
