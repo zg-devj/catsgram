@@ -1,14 +1,13 @@
-package ru.yandex.practicum.catsgram.controllers;
+package ru.yandex.practicum.catsgram.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.catsgram.model.Post;
+import ru.yandex.practicum.catsgram.service.PostService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,15 +15,14 @@ import java.util.List;
  */
 @RestController
 public class PostController {
-    /**
-     * Логер
-     */
-    private static final Logger log = LoggerFactory.getLogger(PostController.class);
 
-    /**
-     * Список постов
-     */
-    private List<Post> posts = new ArrayList<>();
+
+    private final PostService postService;
+
+    @Autowired
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     /**
      * Возвращает список постов. GET /posts
@@ -33,8 +31,7 @@ public class PostController {
      */
     @GetMapping("/posts")
     private List<Post> findAll() {
-        log.debug("Текущее количество постов {}", posts.size());
-        return posts;
+        return postService.findAll();
     }
 
     /**
@@ -45,8 +42,6 @@ public class PostController {
      */
     @PostMapping(value = "/post")
     public Post create(@RequestBody Post post) {
-        posts.add(post);
-        log.debug("Добавлен пост: {}", post);
-        return post;
+        return postService.create(post);
     }
 }

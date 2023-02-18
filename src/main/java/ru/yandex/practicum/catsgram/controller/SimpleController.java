@@ -1,4 +1,4 @@
-package ru.yandex.practicum.catsgram.controllers;
+package ru.yandex.practicum.catsgram.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

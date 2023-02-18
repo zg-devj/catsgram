@@ -1,4 +1,4 @@
-package ru.yandex.practicum.catsgram.controllers;
+package ru.yandex.practicum.catsgram.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     // Коллекция пользователей
-    private HashMap<String, User> users = new HashMap<>();
+    private final HashMap<String, User> users = new HashMap<>();
 
     /**
      * Возвращаем коллекцию пользователей
