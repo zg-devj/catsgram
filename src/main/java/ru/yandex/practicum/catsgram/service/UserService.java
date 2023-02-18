@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.catsgram.exception.InvalidEmailException;
 import ru.yandex.practicum.catsgram.exception.UserAlreadyExistException;
+import ru.yandex.practicum.catsgram.exception.UserNotFoundException;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.util.Collection;
@@ -23,11 +24,20 @@ public class UserService {
         return users.values();
     }
 
+    // получение пользователя по email
     public User findUserByEmail(String email) {
         if (email == null) {
             return null;
         }
         return users.get(email);
+    }
+
+    public User getUserByEmail(String email) {
+        User user = findUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователя с адресом " + email + " не существует");
+        }
+        return user;
     }
 
     // Создаем пользователя

@@ -18,37 +18,24 @@ public class UserController {
         this.userService = userService;
     }
 
-    /**
-     * Возвращаем коллекцию пользователей
-     * GET /users
-     *
-     * @return Collection<User> коллекцию пользователей
-     */
-    @GetMapping()
+    // Возвращаем коллекцию пользователей
+    @GetMapping
     public Collection<User> findAll() {
         return userService.findAll();
     }
 
-    /**
-     * Создаем нового пользователя, если пользователь
-     * с указанным email не существует
-     * POST /users
-     *
-     * @param user объект пользователя
-     * @return объект пользователя
-     */
-    @PostMapping()
+    @GetMapping("/{email}")
+    public User findUserByEmail(@PathVariable String email){
+        return userService.getUserByEmail(email);
+    }
+
+    // Создаем нового пользователя, если пользователь с указанным email не существует
+    @PostMapping
     public User create(@RequestBody User user) {
         return userService.create(user);
     }
 
-    /**
-     * Обновляем пользователя если существует, или добавляем нового если нет
-     * PUT /users
-     *
-     * @param user объект пользователя
-     * @return объект пользователя
-     */
+    // Обновляем пользователя если существует, или добавляем нового если нет
     @PutMapping
     public User update(@RequestBody User user) {
         return userService.update(user);

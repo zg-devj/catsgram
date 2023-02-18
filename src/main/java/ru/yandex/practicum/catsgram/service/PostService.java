@@ -53,6 +53,7 @@ public class PostService {
         Optional<Post> post = posts.stream()
                 .filter(x -> x.getId() == postId)
                 .findFirst();
+        //.orElseThrow(() -> new PostNotFoundException("Пост c №" + postId + " не найден."));
         if (post.isPresent()) {
             log.debug("Запрошен пост с id={}", postId);
             return post.get();
