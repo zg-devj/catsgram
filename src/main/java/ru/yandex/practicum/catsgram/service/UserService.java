@@ -12,27 +12,30 @@ import java.util.HashMap;
 
 @Service
 public class UserService {
-    /**
-     * Логер
-     */
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    /**
-     * Коллекция пользователей
-     */
+    // Коллекция пользователей
     private final HashMap<String, User> users = new HashMap<>();
 
+    // возвращаем всех пользователей
     public Collection<User> findAll() {
         log.debug("Количество пользователей {}", users.size());
         return users.values();
     }
 
+    public User findUserByEmail(String email) {
+        if (email == null) {
+            return null;
+        }
+        return users.get(email);
+    }
+
+    // Создаем пользователя
     public User create(User user) {
         isEmailExist(user.getEmail());
 
         if (users.containsKey(user.getEmail())) {
-            throw new UserAlreadyExistException("Пользователь с электронной почтой " +
-                    user.getEmail() + " уже зарегистрирован.");
+            throw new UserAlreadyExistException("Пользователь с электронной почтой " + user.getEmail() + " уже зарегистрирован.");
         }
 
         users.put(user.getEmail(), user);
@@ -40,18 +43,14 @@ public class UserService {
         return user;
     }
 
+    // Обновляем пользователя
     public User update(User user) {
         isEmailExist(user.getEmail());
         users.put(user.getEmail(), user);
         return user;
     }
 
-    /**
-     * Проверяем, есть ли пользователь в списке
-     * с такой же электронной почтой
-     *
-     * @param email адрес электронной почты
-     */
+    // Проверяем, есть ли пользователь в списке с такой же электронной почтой
     private void isEmailExist(String email) {
         if (email == null || email.isBlank()) {
             throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
