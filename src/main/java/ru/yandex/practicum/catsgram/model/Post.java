@@ -8,7 +8,7 @@ import java.time.Instant;
 public class Post {
     private Integer id;
     private final String author; // автор
-    private final Instant creationDate = Instant.now();  // дата создания
+    private Instant creationDate = Instant.now();  // дата создания
     private String description; // описание
     private String photoUrl; // url-адрес фотографии
 
@@ -33,6 +33,10 @@ public class Post {
 
     public Instant getCreationDate() {
         return creationDate;
+    }
+
+    public void addDaysToCreationDate(int day) {
+        creationDate = creationDate.plusSeconds(day * 24 * 60 * 60);
     }
 
     public String getDescription() {

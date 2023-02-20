@@ -6,7 +6,6 @@ import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Контроллер постов
@@ -24,8 +23,20 @@ public class PostController {
 
     // Возвращает список постов
     @GetMapping("/posts")
-    public List<Post> findAll() {
-        return postService.findAll();
+    public List<Post> findAll(
+            @RequestParam(name = "sort", defaultValue = "desc") String sort,
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size
+    ) {
+        if (!(sort.equals("asc") || sort.equals("desc"))) {
+            throw new IllegalArgumentException();
+        }
+        if (page < 1 || size <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        Integer from = (page - 1) * size;
+        return postService.findAll(sort, from, size);
     }
 
     // Возвращаем пост по postId

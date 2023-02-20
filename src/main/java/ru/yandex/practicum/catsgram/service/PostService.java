@@ -9,9 +9,11 @@ import ru.yandex.practicum.catsgram.exception.UserNotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -28,10 +30,31 @@ public class PostService {
         this.userService = userService;
     }
 
+    private void init() throws InterruptedException {
+        userService.create(new User("user@example.com", "user", LocalDate.of(2000, 01, 15)));
+
+        for (int i = 1; i < 13; i++) {
+            Post post = new Post(i, "user@example.com",
+                    "desc" + i, "photoUrl");
+            post.addDaysToCreationDate(i);
+            posts.add(post);
+        }
+    }
+
     // Возвращаем все посты
-    public List<Post> findAll() {
+    public List<Post> findAll(String sort, Integer from, Integer size) {
         log.debug("Текущее количество постов {}", posts.size());
-        return posts;
+        return posts.stream()
+                .sorted((o1, o2) -> {
+                    int compare = o1.getCreationDate().compareTo(o2.getCreationDate());
+                    if (sort.equals("desc")) {
+                        compare = -1 * compare;
+                    }
+                    return compare;
+                })
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     // Создаем пост
