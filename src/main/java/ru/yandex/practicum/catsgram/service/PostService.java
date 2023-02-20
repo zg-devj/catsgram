@@ -28,13 +28,34 @@ public class PostService {
     @Autowired
     public PostService(UserService userService) {
         this.userService = userService;
+        try {
+            init();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    // инициализация данных
     private void init() throws InterruptedException {
-        userService.create(new User("user@example.com", "user", LocalDate.of(2000, 01, 15)));
+        userService.create(new User("puss@boots.com", "puss", LocalDate.of(2000, 01, 15)));
+        for (int i = 1; i < 11; i++) {
+            Post post = new Post(i, "puss@boots.com",
+                    "desc" + i, "photoUrl");
+            post.addDaysToCreationDate(i);
+            posts.add(post);
+        }
 
-        for (int i = 1; i < 13; i++) {
-            Post post = new Post(i, "user@example.com",
+        userService.create(new User("cat@dogs.net", "cat", LocalDate.of(2001, 01, 15)));
+        for (int i = 11; i < 21; i++) {
+            Post post = new Post(i, "cat@dogs.net",
+                    "desc" + i, "photoUrl");
+            post.addDaysToCreationDate(i);
+            posts.add(post);
+        }
+
+        userService.create(new User("purrr@luv.me", "purrr", LocalDate.of(2003, 01, 15)));
+        for (int i = 21; i < 31; i++) {
+            Post post = new Post(i, "purrr@luv.me",
                     "desc" + i, "photoUrl");
             post.addDaysToCreationDate(i);
             posts.add(post);
@@ -84,5 +105,20 @@ public class PostService {
             log.warn("Запрошен не существующий пост с id={}", postId);
             throw new PostNotFoundException("Пост c №" + postId + " не найден.");
         }
+    }
+
+    public List<Post> findLastFriendPost(String friendEmail, String sort, Integer size) {
+        log.debug("Последние {} поста, друга {}",size,friendEmail);
+        return posts.stream()
+                .filter(e -> e.getAuthor().equals(friendEmail))
+                .sorted((o1, o2) -> {
+                    int compare = o1.getCreationDate().compareTo(o2.getCreationDate());
+                    if (sort.equals("desc")) {
+                        compare = -1 * compare;
+                    }
+                    return compare;
+                })
+                .limit(size)
+                .collect(Collectors.toList());
     }
 }

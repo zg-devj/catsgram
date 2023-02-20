@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 public class PostController {
 
-
     private final PostService postService;
 
     @Autowired
