@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.catsgram.exception.IncorrectParameterException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.FeedFriendsService;
 import ru.yandex.practicum.catsgram.service.PostService;
@@ -31,13 +32,13 @@ public class PostFeedController {
         serviceFeed.convert(find);
 
         if (!(serviceFeed.getSort().equals("desc") || serviceFeed.getSort().equals("asc"))) {
-            throw new IllegalArgumentException();
+            throw new IncorrectParameterException("sort");
         }
         if (serviceFeed.getSize() == null || serviceFeed.getSize() <= 0) {
-            throw new IllegalArgumentException();
+            throw new IncorrectParameterException("size");
         }
         if (serviceFeed.getFriends().isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IncorrectParameterException("friendsEmails");
         }
 
         List<Post> posts = new ArrayList<>();
