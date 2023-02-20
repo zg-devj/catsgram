@@ -27,12 +27,23 @@ public class PostFeedController {
     public List<Post> findFriendLastPost(
             @RequestBody String find
     ) {
-        FeedFriendsService feedFriendsService = new FeedFriendsService();
-        feedFriendsService.convert(find);
+        FeedFriendsService serviceFeed = new FeedFriendsService();
+        serviceFeed.convert(find);
+
+        if (!(serviceFeed.getSort().equals("desc") || serviceFeed.getSort().equals("asc"))) {
+            throw new IllegalArgumentException();
+        }
+        if (serviceFeed.getSize() == null || serviceFeed.getSize() <= 0) {
+            throw new IllegalArgumentException();
+        }
+        if (serviceFeed.getFriends().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         List<Post> posts = new ArrayList<>();
-        for (String friendEmail : feedFriendsService.getFriends()) {
-            posts.addAll(postService.findLastFriendPost(friendEmail,
-                    feedFriendsService.getSort(), feedFriendsService.getSize()));
+        for (String friendEmail : serviceFeed.getFriends()) {
+            posts.addAll(postService.findAllByUserEmail(friendEmail,
+                    serviceFeed.getSort(), serviceFeed.getSize()));
         }
         return posts;
     }

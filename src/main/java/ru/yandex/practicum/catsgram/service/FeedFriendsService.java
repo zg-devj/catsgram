@@ -22,20 +22,9 @@ public class FeedFriendsService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Возникли проблемы при обработке (разборе, генерации) содержимого JSON: ", e);
         }
-        sort = jsonNode.get("sort").asText();
-        if (!(sort.equals("desc") || sort.equals("asc"))) {
-            throw new IllegalArgumentException();
-        }
-        size = jsonNode.get("size").asInt();
-        if (size == null || size <= 0) {
-            throw new IllegalArgumentException();
-        }
         JsonNode friendsNode = jsonNode.withArray("friends");
         Iterator<JsonNode> iterator = friendsNode.iterator();
         iterator.forEachRemaining(e -> friends.add(e.asText()));
-        if (friends.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public String getSort() {

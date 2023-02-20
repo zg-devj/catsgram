@@ -7,6 +7,9 @@ import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.util.List;
 
+import static ru.yandex.practicum.catsgram.util.Constants.DESCENDING_ORDER;
+import static ru.yandex.practicum.catsgram.util.Constants.SORTS;
+
 /**
  * Контроллер постов
  */
@@ -23,11 +26,11 @@ public class PostController {
     // Возвращает список постов
     @GetMapping("/posts")
     public List<Post> findAll(
-            @RequestParam(name = "sort", defaultValue = "desc") String sort,
+            @RequestParam(name = "sort", defaultValue = DESCENDING_ORDER) String sort,
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size
     ) {
-        if (!(sort.equals("asc") || sort.equals("desc"))) {
+        if (!SORTS.contains(sort)) {
             throw new IllegalArgumentException();
         }
         if (page < 1 || size <= 0) {

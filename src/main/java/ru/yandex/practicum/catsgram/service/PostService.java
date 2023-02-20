@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ru.yandex.practicum.catsgram.util.Constants.DESCENDING_ORDER;
+
 @Service
 public class PostService {
+    private static final Logger log = LoggerFactory.getLogger(PostService.class);
     private int id = 0;
     //Список постов
-    private List<Post> posts = new ArrayList<>();
-
-    private static final Logger log = LoggerFactory.getLogger(PostService.class);
-
+    private final List<Post> posts = new ArrayList<>();
     private final UserService userService;
 
     @Autowired
@@ -66,13 +66,7 @@ public class PostService {
     public List<Post> findAll(String sort, Integer from, Integer size) {
         log.debug("Текущее количество постов {}", posts.size());
         return posts.stream()
-                .sorted((o1, o2) -> {
-                    int compare = o1.getCreationDate().compareTo(o2.getCreationDate());
-                    if (sort.equals("desc")) {
-                        compare = -1 * compare;
-                    }
-                    return compare;
-                })
+                .sorted((o1, o2) -> compare(o1, o2, sort))
                 .skip(from)
                 .limit(size)
                 .collect(Collectors.toList());
@@ -107,18 +101,20 @@ public class PostService {
         }
     }
 
-    public List<Post> findLastFriendPost(String friendEmail, String sort, Integer size) {
-        log.debug("Последние {} поста, друга {}",size,friendEmail);
+    public List<Post> findAllByUserEmail(String friendEmail, String sort, Integer size) {
+        log.debug("Последние {} поста, друга {}", size, friendEmail);
         return posts.stream()
                 .filter(e -> e.getAuthor().equals(friendEmail))
-                .sorted((o1, o2) -> {
-                    int compare = o1.getCreationDate().compareTo(o2.getCreationDate());
-                    if (sort.equals("desc")) {
-                        compare = -1 * compare;
-                    }
-                    return compare;
-                })
+                .sorted((o1, o2) -> compare(o1, o2, sort))
                 .limit(size)
                 .collect(Collectors.toList());
+    }
+
+    private int compare(Post p0, Post p1, String sort) {
+        int compare = p0.getCreationDate().compareTo(p1.getCreationDate());
+        if (sort.equals(DESCENDING_ORDER)) {
+            compare = -1 * compare;
+        }
+        return compare;
     }
 }
