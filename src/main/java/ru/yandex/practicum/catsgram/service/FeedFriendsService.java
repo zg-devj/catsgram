@@ -22,6 +22,8 @@ public class FeedFriendsService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Возникли проблемы при обработке (разборе, генерации) содержимого JSON: ", e);
         }
+        sort = jsonNode.get("sort").asText();
+        size = jsonNode.get("size").asInt();
         JsonNode friendsNode = jsonNode.withArray("friends");
         Iterator<JsonNode> iterator = friendsNode.iterator();
         iterator.forEachRemaining(e -> friends.add(e.asText()));
